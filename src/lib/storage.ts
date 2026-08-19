@@ -1,15 +1,38 @@
-// Mock storage implementation for Phase 1
-import { randomUUID } from 'crypto';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+
+const getS3Client = () => {
+  return new S3Client({
+    region: "auto",
+    endpoint: process.env.S3_ENDPOINT || "",
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY || "",
+      secretAccessKey: process.env.S3_SECRET_KEY || "",
+    },
+  });
+};
 
 export async function uploadImage(buffer: Buffer, key: string): Promise<string> {
-  // In a real implementation, this would upload to S3/Cloudflare R2
-  // and return the public URL.
-  console.log(`[Mock] Uploading image ${key} (${buffer.length} bytes) to storage...`);
+  const s3Client = getS3Client();
+  const command = new PutObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME || "dreamola-art",
+    Key: key,
+    Body: buffer,
+    ContentType: "image/jpeg",
+  });
+
+  await s3Client.send(command);
   
-  // Return a mock URL
-  return `https://mock-storage.dreamola.com/${key}`;
+  // Return the public URL
+  const publicUrl = process.env.NEXT_PUBLIC_S3_PUBLIC_URL || "https://pub-6524ef51842b420cb5f6f462f0732ac3.r2.dev";
+  return `${publicUrl}/${key}`;
 }
 
 export async function deleteImage(key: string): Promise<void> {
-  console.log(`[Mock] Deleting image ${key} from storage...`);
+  const s3Client = getS3Client();
+  const command = new DeleteObjectCommand({
+    Bucket: process.env.S3_BUCKET_NAME || "dreamola-art",
+    Key: key,
+  });
+
+  await s3Client.send(command);
 }

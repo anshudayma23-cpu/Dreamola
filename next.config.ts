@@ -13,7 +13,15 @@ const nextConfig: NextConfig = {
         ]
       }
     ];
-  }
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'pub-6524ef51842b420cb5f6f462f0732ac3.r2.dev',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
