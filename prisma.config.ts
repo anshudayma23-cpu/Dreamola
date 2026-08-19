@@ -11,6 +11,7 @@ export default defineConfig({
   },
   datasource: {
     url: process.env["DATABASE_URL"],
+    // @ts-ignore - Supress TS error until Prisma updates its type definitions
     directUrl: process.env["DIRECT_URL"],
   },
 });
