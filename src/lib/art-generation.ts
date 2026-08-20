@@ -103,36 +103,62 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
   return `data:${contentType};base64,${base64Image}`;
 }
 
+// Custom key sequence to distribute load (1-based indices mapped to environment variables)
+const KEY_SEQUENCE = [1, 2, 5, 10, 3, 6, 11, 4, 7, 12, 8, 14, 9, 13, 15];
+let requestCounter = 0;
+
 export async function generateArt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): Promise<{ url: string }> {
   const prompt = buildArtPrompt(dreamText, interpretation, type, styleMode);
   console.log(`[Art Generation] Generating (${type}) with style (${styleMode}) for prompt: "${prompt}"`);
 
-  const hfKeys = [
-    process.env.HUGGINGFACE_API_KEY_1,
-    process.env.HUGGINGFACE_API_KEY_2,
-    process.env.HUGGINGFACE_API_KEY_3,
-    process.env.HUGGINGFACE_API_KEY_4,
-    process.env.HUGGINGFACE_API_KEY_5,
-    process.env.HUGGINGFACE_API_KEY_6,
-    process.env.HUGGINGFACE_API_KEY_7,
-    process.env.HUGGINGFACE_API_KEY_8,
-    process.env.HUGGINGFACE_API_KEY_9,
-    process.env.HUGGINGFACE_API_KEY_10,
-    process.env.HUGGINGFACE_API_KEY_11,
-    process.env.HUGGINGFACE_API_KEY_12,
-    process.env.HUGGINGFACE_API_KEY_13,
-    process.env.HUGGINGFACE_API_KEY_14,
-    process.env.HUGGINGFACE_API_KEY_15,
-    process.env.HUGGINGFACE_API_KEY, // backward compatibility
-  ].filter(Boolean) as string[];
+  // Load all keys into a map/record for easy lookup
+  const hfKeysMap: Record<number, string | undefined> = {
+    1: process.env.HUGGINGFACE_API_KEY_1,
+    2: process.env.HUGGINGFACE_API_KEY_2,
+    3: process.env.HUGGINGFACE_API_KEY_3,
+    4: process.env.HUGGINGFACE_API_KEY_4,
+    5: process.env.HUGGINGFACE_API_KEY_5,
+    6: process.env.HUGGINGFACE_API_KEY_6,
+    7: process.env.HUGGINGFACE_API_KEY_7,
+    8: process.env.HUGGINGFACE_API_KEY_8,
+    9: process.env.HUGGINGFACE_API_KEY_9,
+    10: process.env.HUGGINGFACE_API_KEY_10,
+    11: process.env.HUGGINGFACE_API_KEY_11,
+    12: process.env.HUGGINGFACE_API_KEY_12,
+    13: process.env.HUGGINGFACE_API_KEY_13,
+    14: process.env.HUGGINGFACE_API_KEY_14,
+    15: process.env.HUGGINGFACE_API_KEY_15,
+  };
 
-  // Try Hugging Face Keys
-  for (let i = 0; i < hfKeys.length; i++) {
+  // Build the ordered list of active/configured keys based on the custom KEY_SEQUENCE
+  const activeKeys: { key: string; label: string }[] = [];
+  
+  // Start from the current offset in the sequence
+  const startOffset = requestCounter % KEY_SEQUENCE.length;
+  requestCounter++; // Move pointer for the next request
+
+  for (let i = 0; i < KEY_SEQUENCE.length; i++) {
+    const sequenceNum = KEY_SEQUENCE[(startOffset + i) % KEY_SEQUENCE.length];
+    const key = hfKeysMap[sequenceNum];
+    if (key) {
+      activeKeys.push({ key, label: `Hugging Face API Key ${sequenceNum}` });
+    }
+  }
+
+  // Fallback check for legacy non-numbered key
+  if (process.env.HUGGINGFACE_API_KEY) {
+    activeKeys.push({ key: process.env.HUGGINGFACE_API_KEY, label: 'Hugging Face API Key (Legacy)' });
+  }
+
+  // Try Hugging Face Keys in the distributed sequence order
+  for (let i = 0; i < activeKeys.length; i++) {
+    const { key, label } = activeKeys[i];
     try {
-      const url = await generateWithHuggingFace(prompt, hfKeys[i]);
+      const url = await generateWithHuggingFace(prompt, key);
+      console.log(`[Art Generation] Successfully generated image using: ${label}`);
       return { url };
-    } catch (e) {
-      console.warn(`[Art Generation] Hugging Face API Key ${i + 1} failed, trying next...`);
+    } catch (e: any) {
+      console.warn(`[Art Generation] ${label} failed: ${e.message}. Trying next key...`);
     }
   }
 
