@@ -108,6 +108,9 @@ export default function DreamPage() {
     setIsSaved(false);
     setShareSuccess(false);
     setSavedDreamId(null);
+    setStoryArtUrl('');
+    setSubconsciousArtUrl('');
+    setArtAnalysis('');
 
     try {
       const res = await fetch('/api/dreams/interpret', {
@@ -613,23 +616,12 @@ export default function DreamPage() {
                   </p>
                 </div>
               ) : storyArtUrl ? (
-                <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative">
-                  {!isStoryArtLoaded && (
-                    <div className="absolute inset-0 rounded-xl border border-outline-variant/20 bg-white/60 backdrop-blur-xs flex flex-col items-center justify-center z-10">
-                      <Loader2 className="w-8 h-8 text-primary animate-spin mb-3" />
-                      <p className="text-primary font-label-md text-label-md animate-pulse">
-                        Loading scene visual...
-                      </p>
-                    </div>
-                  )}
+                <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative animate-fadeIn">
                   <img 
-                    key={storyArtUrl}
                     src={storyArtUrl} 
                     alt="Literal dream visual scene" 
                     referrerPolicy="no-referrer"
-                    onLoad={() => setIsStoryArtLoaded(true)}
-                    onError={() => setIsStoryArtLoaded(true)}
-                    className={`w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105 ${isStoryArtLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"
                   />
                   <div className="absolute bottom-4 left-4 right-4 flex gap-2 z-20">
                     <span className="bg-black/50 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-label-md flex items-center gap-1.5 shadow-sm">
@@ -703,23 +695,12 @@ export default function DreamPage() {
                   </p>
                 </div>
               ) : subconsciousArtUrl ? (
-                <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative">
-                  {!isSubconsciousArtLoaded && (
-                    <div className="absolute inset-0 rounded-xl border border-outline-variant/20 bg-white/60 backdrop-blur-xs flex flex-col items-center justify-center z-10">
-                      <Loader2 className="w-8 h-8 text-secondary animate-spin mb-3" />
-                      <p className="text-secondary font-label-md text-label-md animate-pulse">
-                        Loading feeling visual...
-                      </p>
-                    </div>
-                  )}
+                <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative animate-fadeIn">
                   <img 
-                    key={subconsciousArtUrl}
                     src={subconsciousArtUrl} 
                     alt="Subconscious abstract painting" 
                     referrerPolicy="no-referrer"
-                    onLoad={() => setIsSubconsciousArtLoaded(true)}
-                    onError={() => setIsSubconsciousArtLoaded(true)}
-                    className={`w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105 ${isSubconsciousArtLoaded ? 'opacity-100' : 'opacity-0'}`}
+                    className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"
                   />
                 </div>
               ) : (
