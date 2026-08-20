@@ -109,41 +109,50 @@ export async function generateArt(dreamText: string, interpretation?: string, ty
   const prompt = buildArtPrompt(dreamText, interpretation, type, styleMode);
   console.log(`[Art Generation] Generating (${type}) with style (${styleMode}) for prompt: "${prompt}"`);
   
-  const googleKey1 = process.env.GOOGLE_AI_API_KEY_1;
-  const googleKey2 = process.env.GOOGLE_AI_API_KEY_2;
-  const hfKey = process.env.HUGGINGFACE_API_KEY;
+  const googleKeys = [
+    process.env.GOOGLE_AI_API_KEY_1,
+    process.env.GOOGLE_AI_API_KEY_2,
+    process.env.GOOGLE_AI_API_KEY_3,
+    process.env.GOOGLE_AI_API_KEY_4,
+    process.env.GOOGLE_AI_API_KEY_5,
+    process.env.GOOGLE_AI_API_KEY_6,
+    process.env.GOOGLE_AI_API_KEY_7,
+    process.env.GOOGLE_AI_API_KEY_8,
+    process.env.GOOGLE_AI_API_KEY_9,
+    process.env.GOOGLE_AI_API_KEY_10,
+  ].filter(Boolean) as string[];
 
-  // Try Primary Google Key
-  if (googleKey1) {
+  const hfKeys = [
+    process.env.HUGGINGFACE_API_KEY_1,
+    process.env.HUGGINGFACE_API_KEY_2,
+    process.env.HUGGINGFACE_API_KEY_3,
+    process.env.HUGGINGFACE_API_KEY_4,
+    process.env.HUGGINGFACE_API_KEY_5,
+    process.env.HUGGINGFACE_API_KEY, // backward compatibility
+  ].filter(Boolean) as string[];
+
+  // Try Google Keys
+  for (let i = 0; i < googleKeys.length; i++) {
     try {
-      const url = await generateWithGoogle(prompt, googleKey1);
+      const url = await generateWithGoogle(prompt, googleKeys[i]);
       return { url };
     } catch (e) {
-      console.warn("[Art Generation] Google API Key 1 failed, trying next...");
+      console.warn(`[Art Generation] Google API Key ${i + 1} failed, trying next...`);
     }
   }
 
-  // Try Secondary Google Key
-  if (googleKey2) {
+  // Try Hugging Face Keys
+  for (let i = 0; i < hfKeys.length; i++) {
     try {
-      const url = await generateWithGoogle(prompt, googleKey2);
+      const url = await generateWithHuggingFace(prompt, hfKeys[i]);
       return { url };
     } catch (e) {
-      console.warn("[Art Generation] Google API Key 2 failed, trying next...");
-    }
-  }
-
-  // Try Hugging Face
-  if (hfKey) {
-    try {
-      const url = await generateWithHuggingFace(prompt, hfKey);
-      return { url };
-    } catch (e) {
-      console.warn("[Art Generation] Hugging Face failed, using reliable high-speed fallback...");
+      console.warn(`[Art Generation] Hugging Face API Key ${i + 1} failed, trying next...`);
     }
   }
 
   // Fast, beautiful reliable fallback via Pollinations AI
+  console.warn("[Art Generation] All primary keys failed, using reliable high-speed fallback...");
   const randomSeed = Math.floor(Math.random() * 1000000);
   const cleanPrompt = encodeURIComponent(prompt.trim());
   const fallbackUrl = `https://image.pollinations.ai/prompt/${cleanPrompt}?width=1024&height=1024&nologo=true&seed=${randomSeed}&model=flux`;
