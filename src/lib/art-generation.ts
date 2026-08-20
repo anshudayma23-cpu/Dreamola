@@ -58,30 +58,6 @@ async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 4
   }
 }
 
-async function generateWithGoogle(prompt: string, apiKey: string): Promise<string> {
-  // Try imagen-3.0-generate-002
-  const res = await fetchWithTimeout(
-    `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        instances: [{ prompt }],
-        parameters: { sampleCount: 1, aspectRatio: "1:1" },
-      }),
-    },
-    4000
-  );
-
-  if (!res.ok) throw new Error(`Google API failed: ${res.statusText}`);
-
-  const data = await res.json();
-  if (!data.predictions?.[0]?.bytesBase64Encoded) {
-    throw new Error("No image data returned from Google API");
-  }
-
-  return `data:${data.predictions[0].mimeType || 'image/jpeg'};base64,${data.predictions[0].bytesBase64Encoded}`;
-}
 
 async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<string> {
   const res = await fetchWithTimeout(
@@ -109,37 +85,24 @@ export async function generateArt(dreamText: string, interpretation?: string, ty
   const prompt = buildArtPrompt(dreamText, interpretation, type, styleMode);
   console.log(`[Art Generation] Generating (${type}) with style (${styleMode}) for prompt: "${prompt}"`);
 
-  const googleKeys = [
-    process.env.GOOGLE_AI_API_KEY_1,
-    process.env.GOOGLE_AI_API_KEY_2,
-    process.env.GOOGLE_AI_API_KEY_3,
-    process.env.GOOGLE_AI_API_KEY_4,
-    process.env.GOOGLE_AI_API_KEY_5,
-    process.env.GOOGLE_AI_API_KEY_6,
-    process.env.GOOGLE_AI_API_KEY_7,
-    process.env.GOOGLE_AI_API_KEY_8,
-    process.env.GOOGLE_AI_API_KEY_9,
-    process.env.GOOGLE_AI_API_KEY_10,
-  ].filter(Boolean) as string[];
-
   const hfKeys = [
     process.env.HUGGINGFACE_API_KEY_1,
     process.env.HUGGINGFACE_API_KEY_2,
     process.env.HUGGINGFACE_API_KEY_3,
     process.env.HUGGINGFACE_API_KEY_4,
     process.env.HUGGINGFACE_API_KEY_5,
+    process.env.HUGGINGFACE_API_KEY_6,
+    process.env.HUGGINGFACE_API_KEY_7,
+    process.env.HUGGINGFACE_API_KEY_8,
+    process.env.HUGGINGFACE_API_KEY_9,
+    process.env.HUGGINGFACE_API_KEY_10,
+    process.env.HUGGINGFACE_API_KEY_11,
+    process.env.HUGGINGFACE_API_KEY_12,
+    process.env.HUGGINGFACE_API_KEY_13,
+    process.env.HUGGINGFACE_API_KEY_14,
+    process.env.HUGGINGFACE_API_KEY_15,
     process.env.HUGGINGFACE_API_KEY, // backward compatibility
   ].filter(Boolean) as string[];
-
-  // Try Google Keys
-  for (let i = 0; i < googleKeys.length; i++) {
-    try {
-      const url = await generateWithGoogle(prompt, googleKeys[i]);
-      return { url };
-    } catch (e) {
-      console.warn(`[Art Generation] Google API Key ${i + 1} failed, trying next...`);
-    }
-  }
 
   // Try Hugging Face Keys
   for (let i = 0; i < hfKeys.length; i++) {
