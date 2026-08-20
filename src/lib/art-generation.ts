@@ -32,7 +32,7 @@ function scrubForNSFW(text: string): string {
 
 export function buildArtPrompt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): string {
   let baseText = sanitizePrompt(dreamText);
-  
+
   if (type === 'feeling' && interpretation) {
     // Scrub trigger words to bypass NSFW filters while maintaining the feeling
     let cleanMeaning = scrubForNSFW(interpretation);
@@ -43,7 +43,7 @@ export function buildArtPrompt(dreamText: string, interpretation?: string, type:
     const stylePrefix = styleMode === 'surreal' ? 'Ethereal surreal fine art painting of' : 'Highly detailed photorealistic cinematic render of';
     baseText = `${stylePrefix}: ${scrubForNSFW(baseText).slice(0, 300)}`;
   }
-  
+
   return `${baseText}${ART_STYLE_SUFFIX}`;
 }
 
@@ -72,14 +72,14 @@ async function generateWithGoogle(prompt: string, apiKey: string): Promise<strin
     },
     4000
   );
-  
+
   if (!res.ok) throw new Error(`Google API failed: ${res.statusText}`);
-  
+
   const data = await res.json();
   if (!data.predictions?.[0]?.bytesBase64Encoded) {
     throw new Error("No image data returned from Google API");
   }
-  
+
   return `data:${data.predictions[0].mimeType || 'image/jpeg'};base64,${data.predictions[0].bytesBase64Encoded}`;
 }
 
@@ -96,9 +96,9 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
     },
     5000
   );
-  
+
   if (!res.ok) throw new Error(`HuggingFace API failed: ${res.statusText}`);
-  
+
   const contentType = res.headers.get('content-type') || 'image/jpeg';
   const arrayBuffer = await res.arrayBuffer();
   const base64Image = Buffer.from(arrayBuffer).toString('base64');
@@ -108,7 +108,7 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
 export async function generateArt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): Promise<{ url: string }> {
   const prompt = buildArtPrompt(dreamText, interpretation, type, styleMode);
   console.log(`[Art Generation] Generating (${type}) with style (${styleMode}) for prompt: "${prompt}"`);
-  
+
   const googleKeys = [
     process.env.GOOGLE_AI_API_KEY_1,
     process.env.GOOGLE_AI_API_KEY_2,
@@ -156,6 +156,6 @@ export async function generateArt(dreamText: string, interpretation?: string, ty
   const randomSeed = Math.floor(Math.random() * 1000000);
   const cleanPrompt = encodeURIComponent(prompt.trim());
   const fallbackUrl = `https://image.pollinations.ai/prompt/${cleanPrompt}?width=1024&height=1024&nologo=true&seed=${randomSeed}&model=flux`;
-  
+
   return { url: fallbackUrl };
 }
