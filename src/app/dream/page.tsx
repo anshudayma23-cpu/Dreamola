@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginModal } from '@/components/auth/LoginModal';
@@ -35,7 +35,7 @@ const DEFAULT_MOODS = [
   { label: '#Oceanic', icon: null },
 ];
 
-export default function DreamPage() {
+function DreamPageContent() {
   const { isAuthenticated } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -947,5 +947,20 @@ export default function DreamPage() {
         }} 
       />
     </div>
+  );
+}
+
+export default function DreamPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-surface">
+        <div className="flex flex-col items-center gap-3">
+          <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          <p className="text-primary font-label-md text-sm animate-pulse">Loading Dream Canvas...</p>
+        </div>
+      </div>
+    }>
+      <DreamPageContent />
+    </Suspense>
   );
 }
