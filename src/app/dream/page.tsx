@@ -119,7 +119,8 @@ export default function DreamPage() {
         body: JSON.stringify({ 
           dreamText, 
           moodTags: selectedMoods, 
-          customTags 
+          customTags,
+          depthMode
         })
       });
       
@@ -182,7 +183,8 @@ export default function DreamPage() {
         body: JSON.stringify({ 
           dreamText, 
           interpretation: interpretation || undefined,
-          type 
+          type,
+          styleMode: artStyleMode
         })
       });
       const data = await res.json();
@@ -451,7 +453,7 @@ export default function DreamPage() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 border-t border-outline-variant/10">
             <div className="flex flex-wrap gap-4 items-center">
               {/* Depth Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner">
+              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner relative group">
                 <button 
                   type="button"
                   onClick={() => setDepthMode('deep')}
@@ -470,10 +472,16 @@ export default function DreamPage() {
                 >
                   Surface
                 </button>
+
+                {/* Tooltip */}
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-on-background text-surface px-3 py-1.5 rounded-lg font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                  Deep: Find hidden archetypes | Surface: Literal summary
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-on-background rotate-45"></div>
+                </div>
               </div>
 
               {/* Art Style Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner">
+              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner relative group">
                 <button 
                   type="button"
                   onClick={() => setArtStyleMode('surreal')}
@@ -492,6 +500,12 @@ export default function DreamPage() {
                 >
                   Literal
                 </button>
+
+                {/* Tooltip */}
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-on-background text-surface px-3 py-1.5 rounded-lg font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-lg">
+                  Surreal: Abstract emotional painting | Literal: Photorealistic scene
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-on-background rotate-45"></div>
+                </div>
               </div>
             </div>
 

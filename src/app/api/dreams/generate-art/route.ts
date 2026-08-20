@@ -10,6 +10,7 @@ const artSchema = z.object({
   dreamText: z.string().min(5).max(5000),
   interpretation: z.string().optional(),
   type: z.enum(['literal', 'feeling']).default('feeling'),
+  styleMode: z.enum(['surreal', 'literal']).optional(),
 });
 
 export async function POST(req: Request) {
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid input', details: parsed.error }, { status: 400 });
     }
 
-    const { dreamText, interpretation, type } = parsed.data;
+    const { dreamText, interpretation, type, styleMode } = parsed.data;
 
     const limit = await checkArtLimit(userId, type);
     if (!limit.allowed) {
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
       }, { status: 429 });
     }
 
-    const result = await generateArt(dreamText, interpretation, type);
+    const result = await generateArt(dreamText, interpretation, type, styleMode);
     
     if (userId) {
       await incrementArtUsage(userId, type);

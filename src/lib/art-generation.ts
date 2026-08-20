@@ -30,17 +30,18 @@ function scrubForNSFW(text: string): string {
   return scrubbed;
 }
 
-export function buildArtPrompt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling'): string {
+export function buildArtPrompt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): string {
   let baseText = sanitizePrompt(dreamText);
   
   if (type === 'feeling' && interpretation) {
     // Scrub trigger words to bypass NSFW filters while maintaining the feeling
     let cleanMeaning = scrubForNSFW(interpretation);
-    // Prepend a directive so the AI paints the psychological feeling rather than literal objects
-    baseText = `Abstract ethereal watercolor fine art representing these subconscious dream feelings: ${cleanMeaning.slice(0, 300)}. Soft pastel surrealism, high aesthetic.`;
+    const stylePrefix = styleMode === 'surreal' ? 'Soft pastel surrealism' : 'Sharp defined literal representation';
+    baseText = `Abstract ethereal fine art representing these subconscious dream feelings: ${cleanMeaning.slice(0, 300)}. ${stylePrefix}, high aesthetic.`;
   } else {
     // For literal dream generation, scrub NSFW keywords to prevent API blocks
-    baseText = `Ethereal fine art painting of: ${scrubForNSFW(baseText).slice(0, 300)}`;
+    const stylePrefix = styleMode === 'surreal' ? 'Ethereal surreal fine art painting of' : 'Highly detailed photorealistic cinematic render of';
+    baseText = `${stylePrefix}: ${scrubForNSFW(baseText).slice(0, 300)}`;
   }
   
   return `${baseText}${ART_STYLE_SUFFIX}`;
@@ -103,9 +104,9 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
   return `data:image/jpeg;base64,${base64Image}`;
 }
 
-export async function generateArt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling'): Promise<{ url: string }> {
-  const prompt = buildArtPrompt(dreamText, interpretation, type);
-  console.log(`[Art Generation] Generating (${type}) for prompt: "${prompt}"`);
+export async function generateArt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): Promise<{ url: string }> {
+  const prompt = buildArtPrompt(dreamText, interpretation, type, styleMode);
+  console.log(`[Art Generation] Generating (${type}) with style (${styleMode}) for prompt: "${prompt}"`);
   
   const googleKey1 = process.env.GOOGLE_AI_API_KEY_1;
   const googleKey2 = process.env.GOOGLE_AI_API_KEY_2;

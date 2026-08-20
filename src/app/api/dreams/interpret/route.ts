@@ -7,9 +7,10 @@ import { checkInterpretationLimit, incrementInterpretationUsage } from '../../..
 import { cookies } from 'next/headers';
 
 const dreamSchema = z.object({
-  dreamText: z.string().min(10).max(5000),
+  dreamText: z.string().min(5).max(5000),
   moodTags: z.array(z.string()).optional(),
   customTags: z.array(z.string()).optional(),
+  depthMode: z.enum(['deep', 'surface']).optional(),
 });
 
 export async function POST(req: Request) {
@@ -29,8 +30,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid input', details: parsed.error }, { status: 400 });
     }
 
-    const { dreamText } = parsed.data;
-    const result = await interpret(dreamText);
+    const { dreamText, depthMode } = parsed.data;
+    const result = await interpret(dreamText, depthMode);
     
     if (userId) {
       await incrementInterpretationUsage(userId);

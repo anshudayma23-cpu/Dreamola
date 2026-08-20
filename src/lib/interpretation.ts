@@ -74,26 +74,31 @@ export async function extractSymbols(dreamText: string): Promise<Symbol[]> {
   return matched.slice(0, 4);
 }
 
-export function generateInterpretation(symbols: Symbol[]): string {
+export function generateInterpretation(symbols: Symbol[], depthMode: 'deep' | 'surface' = 'deep'): string {
   if (symbols.length === 0) return FALLBACK_INTERPRETATION;
   
-  let result = "";
+  let result = depthMode === 'deep' 
+    ? "On a deeper psychological level, your dream holds significant meaning. "
+    : "Looking at the literal elements of your dream, we can see some interesting themes. ";
+
   symbols.forEach((sym, index) => {
+    const interpretationText = depthMode === 'deep' ? sym.interpretationTheme : `it relates to concepts of ${sym.keyword}`;
+    
     if (index === 0) {
-      result += `The presence of '${sym.keyword}' suggests ${sym.interpretationTheme} `;
+      result += `The presence of '${sym.keyword}' suggests ${interpretationText}. `;
     } else if (index === symbols.length - 1) {
-      result += `Finally, '${sym.keyword}' often points to ${sym.interpretationTheme} `;
+      result += `Finally, '${sym.keyword}' often points to ${interpretationText}. `;
     } else {
-      result += `Additionally, '${sym.keyword}' can mean ${sym.interpretationTheme} `;
+      result += `Additionally, '${sym.keyword}' can mean ${interpretationText}. `;
     }
   });
   
   return result.trim();
 }
 
-export async function interpret(dreamText: string) {
+export async function interpret(dreamText: string, depthMode: 'deep' | 'surface' = 'deep') {
   const symbols = await extractSymbols(dreamText);
-  const interpretation = generateInterpretation(symbols);
+  const interpretation = generateInterpretation(symbols, depthMode);
   
   return {
     interpretation,
