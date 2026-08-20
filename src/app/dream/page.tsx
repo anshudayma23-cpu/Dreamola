@@ -360,6 +360,14 @@ export default function DreamPage() {
               id="dream-input"
               value={dreamText}
               onChange={(e) => setDreamText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  if (!isInterpreting && dreamText.trim().length >= 5) {
+                    handleInterpret();
+                  }
+                }
+              }}
               placeholder="I was standing before a giant wooden door in a sea of clouds..." 
               rows={5}
               disabled={isInterpreting}
