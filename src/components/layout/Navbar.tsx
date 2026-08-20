@@ -121,7 +121,7 @@ export function Navbar() {
           </div>
 
           {/* Right: Actions */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto', flexShrink: 0 }}>
             {isAuthenticated ? (
               <div style={{ position: 'relative' }}>
                 <button
@@ -209,6 +209,7 @@ export function Navbar() {
                 </button>
                 <Link
                   href="/dream"
+                  className="hidden md:flex"
                   style={{
                     display: 'flex', alignItems: 'center', gap: '6px',
                     padding: '8px 18px', borderRadius: '9999px',

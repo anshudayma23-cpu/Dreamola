@@ -1,5 +1,6 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { 
@@ -68,13 +69,37 @@ export default function DreamPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [shareSuccess, setShareSuccess] = useState(false);
   const [savedDreamId, setSavedDreamId] = useState<string | null>(null);
+  const [storyArtError, setStoryArtError] = useState(false);
+  const [subconsciousArtError, setSubconsciousArtError] = useState(false);
+
+  const searchParams = useSearchParams();
+
+  // Read prompt from URL query params (passed from homepage)
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt && !dreamText) {
+      setDreamText(prompt);
+    }
+  }, [searchParams]);
+
+  // Auto-trigger interpretation when prompt is loaded from URL
+  const [hasAutoTriggered, setHasAutoTriggered] = useState(false);
+  useEffect(() => {
+    const prompt = searchParams.get('prompt');
+    if (prompt && dreamText === prompt && !hasAutoTriggered && dreamText.length >= 5) {
+      setHasAutoTriggered(true);
+      handleInterpret();
+    }
+  }, [dreamText, hasAutoTriggered]);
 
   useEffect(() => {
     setIsStoryArtLoaded(false);
+    setStoryArtError(false);
   }, [storyArtUrl]);
 
   useEffect(() => {
     setIsSubconsciousArtLoaded(false);
+    setSubconsciousArtError(false);
   }, [subconsciousArtUrl]);
 
   const toggleMood = (mood: string) => {
@@ -653,18 +678,31 @@ export default function DreamPage() {
                 </div>
               ) : storyArtUrl ? (
                 <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative animate-fadeIn">
-                  {!isStoryArtLoaded && (
+                  {!isStoryArtLoaded && !storyArtError && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
                       <Loader2 className="w-8 h-8 text-primary animate-spin mb-3" />
                       <p className="text-primary font-label-md text-sm animate-pulse">Loading image...</p>
+                    </div>
+                  )}
+                  {storyArtError && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl gap-3">
+                      <p className="text-red-500 font-label-md text-sm">Image failed to load</p>
+                      <button
+                        type="button"
+                        onClick={() => { setStoryArtError(false); setIsStoryArtLoaded(false); handleGenerateArt('literal'); }}
+                        className="btn-aurora px-4 py-2 rounded-full font-button text-xs cursor-pointer"
+                      >
+                        Retry
+                      </button>
                     </div>
                   )}
                   <img 
                     src={storyArtUrl} 
                     alt="Literal dream visual scene" 
                     onLoad={() => setIsStoryArtLoaded(true)}
-                    onError={() => setIsStoryArtLoaded(true)}
+                    onError={() => { setStoryArtError(true); }}
                     className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"
+                    style={{ display: isStoryArtLoaded ? 'block' : 'none' }}
                   />
                   <div className="absolute bottom-4 left-4 right-4 flex gap-2 z-20">
                     <span className="bg-black/50 backdrop-blur-md text-white text-xs px-3 py-1.5 rounded-full font-label-md flex items-center gap-1.5 shadow-sm">
@@ -739,18 +777,31 @@ export default function DreamPage() {
                 </div>
               ) : subconsciousArtUrl ? (
                 <div className="w-full h-full rounded-xl overflow-hidden shadow-inner relative animate-fadeIn">
-                  {!isSubconsciousArtLoaded && (
+                  {!isSubconsciousArtLoaded && !subconsciousArtError && (
                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl">
                       <Loader2 className="w-8 h-8 text-secondary animate-spin mb-3" />
                       <p className="text-secondary font-label-md text-sm animate-pulse">Loading image...</p>
+                    </div>
+                  )}
+                  {subconsciousArtError && (
+                    <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/60 backdrop-blur-sm rounded-xl gap-3">
+                      <p className="text-red-500 font-label-md text-sm">Image failed to load</p>
+                      <button
+                        type="button"
+                        onClick={() => { setSubconsciousArtError(false); setIsSubconsciousArtLoaded(false); handleGenerateArt('feeling'); }}
+                        className="btn-aurora px-4 py-2 rounded-full font-button text-xs cursor-pointer"
+                      >
+                        Retry
+                      </button>
                     </div>
                   )}
                   <img 
                     src={subconsciousArtUrl} 
                     alt="Subconscious abstract painting" 
                     onLoad={() => setIsSubconsciousArtLoaded(true)}
-                    onError={() => setIsSubconsciousArtLoaded(true)}
+                    onError={() => { setSubconsciousArtError(true); }}
                     className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"
+                    style={{ display: isSubconsciousArtLoaded ? 'block' : 'none' }}
                   />
                 </div>
               ) : (

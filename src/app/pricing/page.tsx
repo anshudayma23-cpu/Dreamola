@@ -190,7 +190,7 @@ export default function PricingPage() {
               <h3 className="font-headline-md text-headline-md text-on-surface font-bold">Dreamer</h3>
               
               <div className="flex items-baseline gap-1 my-2">
-                <span className="font-display-lg text-display-lg text-on-surface font-bold">$0</span>
+                <span className="font-display-lg text-display-lg text-on-surface font-bold">₹0</span>
                 <span className="text-on-surface-variant text-sm font-medium">/month</span>
               </div>
               <p className="text-sm text-on-surface-variant">Perfect for beginning your dream exploration journey.</p>
@@ -241,7 +241,7 @@ export default function PricingPage() {
               
               <div className="flex items-baseline gap-1 my-2">
                 <span className="font-display-lg text-display-lg text-primary font-bold">
-                  {billingCycle === 'annually' ? '$3.99' : '$4.99'}
+                  {billingCycle === 'annually' ? '₹24' : '₹29'}
                 </span>
                 <span className="text-on-surface-variant text-sm font-medium">/month</span>
               </div>
@@ -301,7 +301,7 @@ export default function PricingPage() {
               
               <div className="flex items-baseline gap-1 my-2">
                 <span className="font-display-lg text-display-lg text-on-surface font-bold">
-                  {billingCycle === 'annually' ? '$7.99' : '$9.99'}
+                  {billingCycle === 'annually' ? '₹39' : '₹49'}
                 </span>
                 <span className="text-on-surface-variant text-sm font-medium">/month</span>
               </div>
@@ -367,9 +367,9 @@ export default function PricingPage() {
               <thead>
                 <tr className="border-b border-outline-variant/20">
                   <th className="py-4 font-bold text-on-surface">Capability</th>
-                  <th className="py-4 font-bold text-on-surface text-center">Dreamer ($0)</th>
-                  <th className="py-4 font-bold text-primary text-center">Lucid ($4.99)</th>
-                  <th className="py-4 font-bold text-on-surface text-center">Oracle ($9.99)</th>
+                  <th className="py-4 font-bold text-on-surface text-center">Dreamer (₹0)</th>
+                  <th className="py-4 font-bold text-primary text-center">Lucid (₹29)</th>
+                  <th className="py-4 font-bold text-on-surface text-center">Oracle (₹49)</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">

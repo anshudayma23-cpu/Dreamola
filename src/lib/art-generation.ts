@@ -47,7 +47,7 @@ export function buildArtPrompt(dreamText: string, interpretation?: string, type:
   return `${baseText}${ART_STYLE_SUFFIX}`;
 }
 
-async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 4000): Promise<Response> {
+async function fetchWithTimeout(url: string, options: RequestInit, timeoutMs = 15000): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
   try {
@@ -70,13 +70,31 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
       },
       body: JSON.stringify({ inputs: prompt }),
     },
-    5000
+    30000
   );
 
-  if (!res.ok) throw new Error(`HuggingFace API failed: ${res.statusText}`);
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => 'Unknown error');
+    console.error(`[Art Generation] HuggingFace error (${res.status}): ${errorText.substring(0, 200)}`);
+    throw new Error(`HuggingFace API failed: ${res.status} ${res.statusText}`);
+  }
 
   const contentType = res.headers.get('content-type') || 'image/jpeg';
+  
+  // Guard: if the response is JSON, it's an error (e.g. model loading)
+  if (contentType.includes('application/json')) {
+    const errorData = await res.json().catch(() => ({}));
+    console.error('[Art Generation] HuggingFace returned JSON instead of image:', errorData);
+    throw new Error(`HuggingFace returned error: ${errorData?.error || 'model loading'}`);
+  }
+
   const arrayBuffer = await res.arrayBuffer();
+  
+  // Guard: if the image is suspiciously small (<1KB), it's likely an error
+  if (arrayBuffer.byteLength < 1000) {
+    throw new Error('HuggingFace returned an invalid/empty image');
+  }
+
   const base64Image = Buffer.from(arrayBuffer).toString('base64');
   return `data:${contentType};base64,${base64Image}`;
 }
