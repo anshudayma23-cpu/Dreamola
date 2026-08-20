@@ -41,7 +41,7 @@ export default function DreamPage() {
 
   // Form states
   const [dreamText, setDreamText] = useState('');
-  const [selectedMoods, setSelectedMoods] = useState<string[]>(['#Floating']);
+  const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [customTags, setCustomTags] = useState<string[]>([]);
   const [customTagInput, setCustomTagInput] = useState('');
   const [isAddingTag, setIsAddingTag] = useState(false);
