@@ -1,7 +1,5 @@
 'use client';
-export const dynamic = 'force-dynamic';
-import { useState, useEffect, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { LoginModal } from '@/components/auth/LoginModal';
 import { 
@@ -36,7 +34,7 @@ const DEFAULT_MOODS = [
   { label: '#Oceanic', icon: null },
 ];
 
-function DreamPageContent() {
+export default function DreamPage() {
   const { isAuthenticated } = useAuth();
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -73,25 +71,16 @@ function DreamPageContent() {
   const [storyArtError, setStoryArtError] = useState(false);
   const [subconsciousArtError, setSubconsciousArtError] = useState(false);
 
-  const searchParams = useSearchParams();
-
-  // Read prompt from URL query params (passed from homepage)
+  // Read prompt from URL query params (passed from homepage) on client mount
   useEffect(() => {
-    const prompt = searchParams.get('prompt');
-    if (prompt && !dreamText) {
-      setDreamText(prompt);
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const prompt = params.get('prompt');
+      if (prompt && !dreamText) {
+        setDreamText(prompt);
+      }
     }
-  }, [searchParams]);
-
-  // Auto-trigger interpretation when prompt is loaded from URL
-  const [hasAutoTriggered, setHasAutoTriggered] = useState(false);
-  useEffect(() => {
-    const prompt = searchParams.get('prompt');
-    if (prompt && dreamText === prompt && !hasAutoTriggered && dreamText.length >= 5) {
-      setHasAutoTriggered(true);
-      handleInterpret();
-    }
-  }, [dreamText, hasAutoTriggered]);
+  }, []);
 
   useEffect(() => {
     setIsStoryArtLoaded(false);
@@ -948,20 +937,5 @@ function DreamPageContent() {
         }} 
       />
     </div>
-  );
-}
-
-export default function DreamPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-surface">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-primary font-label-md text-sm animate-pulse">Loading Dream Canvas...</p>
-        </div>
-      </div>
-    }>
-      <DreamPageContent />
-    </Suspense>
   );
 }
