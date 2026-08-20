@@ -662,7 +662,6 @@ export default function DreamPage() {
                   <img 
                     src={storyArtUrl} 
                     alt="Literal dream visual scene" 
-                    referrerPolicy="no-referrer"
                     onLoad={() => setIsStoryArtLoaded(true)}
                     onError={() => setIsStoryArtLoaded(true)}
                     className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"
@@ -749,7 +748,6 @@ export default function DreamPage() {
                   <img 
                     src={subconsciousArtUrl} 
                     alt="Subconscious abstract painting" 
-                    referrerPolicy="no-referrer"
                     onLoad={() => setIsSubconsciousArtLoaded(true)}
                     onError={() => setIsSubconsciousArtLoaded(true)}
                     className="w-full h-full object-cover rounded-xl transition-all duration-700 hover:scale-105"

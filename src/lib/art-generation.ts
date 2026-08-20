@@ -80,7 +80,7 @@ async function generateWithGoogle(prompt: string, apiKey: string): Promise<strin
     throw new Error("No image data returned from Google API");
   }
   
-  return `data:image/jpeg;base64,${data.predictions[0].bytesBase64Encoded}`;
+  return `data:${data.predictions[0].mimeType || 'image/jpeg'};base64,${data.predictions[0].bytesBase64Encoded}`;
 }
 
 async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<string> {
@@ -99,9 +99,10 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
   
   if (!res.ok) throw new Error(`HuggingFace API failed: ${res.statusText}`);
   
+  const contentType = res.headers.get('content-type') || 'image/jpeg';
   const arrayBuffer = await res.arrayBuffer();
   const base64Image = Buffer.from(arrayBuffer).toString('base64');
-  return `data:image/jpeg;base64,${base64Image}`;
+  return `data:${contentType};base64,${base64Image}`;
 }
 
 export async function generateArt(dreamText: string, interpretation?: string, type: 'literal' | 'feeling' = 'feeling', styleMode: 'surreal' | 'literal' = 'surreal'): Promise<{ url: string }> {
