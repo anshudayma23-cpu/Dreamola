@@ -76,6 +76,10 @@ async function generateWithHuggingFace(prompt: string, apiKey: string): Promise<
   if (!res.ok) {
     const errorText = await res.text().catch(() => 'Unknown error');
     console.error(`[Art Generation] HuggingFace error (${res.status}): ${errorText.substring(0, 200)}`);
+    // Fast-fail on rate limit, auth, or forbidden errors — don't wait for timeout
+    if (res.status === 429 || res.status === 401 || res.status === 403) {
+      throw new Error(`HuggingFace key rejected (${res.status})`);
+    }
     throw new Error(`HuggingFace API failed: ${res.status} ${res.statusText}`);
   }
 

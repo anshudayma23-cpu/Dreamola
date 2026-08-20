@@ -12,9 +12,16 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Image URL is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.GOOGLE_AI_API_KEY_1 || process.env.GOOGLE_AI_API_KEY_2;
+    // Find any available Google AI API key for Gemini text generation
+    let apiKey: string | undefined;
+    for (let i = 1; i <= 15; i++) {
+      const key = process.env[`GOOGLE_AI_API_KEY_${i}`];
+      if (key) { apiKey = key; break; }
+    }
+    // Fallback to legacy env var name
+    if (!apiKey) apiKey = process.env.GOOGLE_AI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ error: 'Google AI API key is not configured' }, { status: 500 });
+      return NextResponse.json({ error: 'Google AI API key is not configured for art analysis' }, { status: 500 });
     }
 
     let mimeType = 'image/jpeg';

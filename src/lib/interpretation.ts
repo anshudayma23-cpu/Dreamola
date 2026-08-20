@@ -65,11 +65,15 @@ export async function extractSymbols(dreamText: string): Promise<Symbol[]> {
   // Sort by length descending so more specific/longer symbols get prioritized
   matched.sort((a, b) => b.keyword.length - a.keyword.length);
   
-  // Also shuffle symbols of same length slightly for dynamic variety
-  matched.sort((a, b) => {
-    if (a.keyword.length === b.keyword.length) return 0.5 - Math.random();
-    return 0;
-  });
+  // Fisher-Yates shuffle within same-length groups for variety
+  for (let i = matched.length - 1; i > 0; i--) {
+    if (matched[i].keyword.length === matched[i - 1].keyword.length) {
+      const j = Math.floor(Math.random() * (i + 1));
+      if (matched[j].keyword.length === matched[i].keyword.length) {
+        [matched[i], matched[j]] = [matched[j], matched[i]];
+      }
+    }
+  }
   
   return matched.slice(0, 4);
 }

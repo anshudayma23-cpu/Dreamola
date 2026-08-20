@@ -97,11 +97,11 @@ export const authOptions: NextAuthOptions = {
         token.role = (user as any).role ?? 'user';
       }
       
-      // Automatically keep plan, isAdmin, and role in sync with database and record active presence
+      // Keep plan, isAdmin, and role in sync with database (read-only, no write)
       if (token.id) {
-        const freshUser = await prisma.user.update({
+        const freshUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          data: { updatedAt: new Date() }
+          select: { plan: true, email: true, username: true, isAdmin: true, role: true }
         }).catch(() => null);
 
         if (freshUser) {

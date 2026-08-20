@@ -4,7 +4,6 @@ import { PrismaClient } from "@prisma/client";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-console.log("DB URL IS:", process.env.DATABASE_URL);
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
