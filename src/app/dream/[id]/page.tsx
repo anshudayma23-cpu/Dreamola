@@ -11,12 +11,13 @@ import { Metadata } from 'next';
 export const dynamic = 'force-dynamic';
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params;
   const dream = await prisma.dream.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { user: { select: { username: true } } }
   });
 
@@ -52,8 +53,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function PublicDreamDetailPage({ params }: Props) {
+  const { id } = await params;
   const dream = await prisma.dream.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       user: {
         select: {

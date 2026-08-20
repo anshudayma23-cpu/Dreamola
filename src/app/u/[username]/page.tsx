@@ -1,11 +1,12 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { UserProfileCard, ProfileUser } from '../../../components/community/UserProfileCard';
 import { GalleryGrid } from '../../../components/gallery/GalleryGrid';
 import { GalleryDream } from '../../../components/gallery/DreamCard';
 import { SparklesIcon } from 'lucide-react';
 
-export default function UserProfilePage({ params }: { params: { username: string } }) {
+export default function UserProfilePage({ params }: { params: Promise<{ username: string }> }) {
+  const { username } = use(params);
   const [user, setUser] = useState<ProfileUser | null>(null);
   const [dreams, setDreams] = useState<GalleryDream[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -13,11 +14,11 @@ export default function UserProfilePage({ params }: { params: { username: string
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/users/${params.username}`).then((res) => {
+      fetch(`/api/users/${username}`).then((res) => {
         if (!res.ok) throw new Error('User not found');
         return res.json();
       }),
-      fetch(`/api/users/${params.username}/dreams`).then((res) => res.json()),
+      fetch(`/api/users/${username}/dreams`).then((res) => res.json()),
     ])
       .then(([userData, dreamData]) => {
         setUser(userData.user);
@@ -28,7 +29,7 @@ export default function UserProfilePage({ params }: { params: { username: string
         setNotFound(true);
       })
       .finally(() => setIsLoading(false));
-  }, [params.username]);
+  }, [username]);
 
   if (notFound) {
     return (

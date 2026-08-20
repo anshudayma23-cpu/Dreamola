@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../hooks/useAuth';
 import { ArrowLeftIcon, Trash2Icon, GlobeIcon, LockIcon } from 'lucide-react';
@@ -16,7 +16,8 @@ interface Dream {
   createdAt: string;
 }
 
-export default function DreamDetailPage({ params }: { params: { id: string } }) {
+export default function DreamDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const router = useRouter();
   const [dream, setDream] = useState<Dream | null>(null);
@@ -32,7 +33,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetch(`/api/dreams/${params.id}`)
+      fetch(`/api/dreams/${id}`)
         .then(res => {
           if (!res.ok) throw new Error('Dream not found');
           return res.json();
@@ -46,13 +47,13 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
           router.push('/journal');
         });
     }
-  }, [isAuthenticated, params.id, router]);
+  }, [isAuthenticated, id, router]);
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this dream forever?')) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/dreams/${params.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/dreams/${id}`, { method: 'DELETE' });
       if (res.ok) {
         router.push('/journal');
       } else {
@@ -68,7 +69,7 @@ export default function DreamDetailPage({ params }: { params: { id: string } }) 
     if (!dream) return;
     setIsUpdatingPublic(true);
     try {
-      const res = await fetch(`/api/dreams/${params.id}`, {
+      const res = await fetch(`/api/dreams/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isPublic: !dream.isPublic })
