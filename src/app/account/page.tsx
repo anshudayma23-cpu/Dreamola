@@ -15,7 +15,15 @@ import {
 } from 'lucide-react';
 
 export default function AccountPage() {
-  const { data: session, status, update: updateSession } = useSession();
+  let session: any = null;
+  let status: string = 'unauthenticated';
+  let updateSession: any = async () => null;
+  try {
+    const s = useSession();
+    session = s.data;
+    status = s.status;
+    updateSession = s.update;
+  } catch {}
   const router = useRouter();
 
   // Profile Form States

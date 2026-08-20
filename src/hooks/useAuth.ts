@@ -3,7 +3,15 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
 
 export function useAuth() {
-  const { data: session, status } = useSession();
+  let sessionData: { data: any; status: string } = { data: null, status: 'unauthenticated' };
+  try {
+    sessionData = useSession();
+  } catch {
+    // Graceful fallback when Next.js prerenders page during build without SessionProvider context
+  }
+
+  const session = sessionData?.data;
+  const status = sessionData?.status || 'unauthenticated';
 
   const user = session?.user;
   const isAuthenticated = status === 'authenticated';

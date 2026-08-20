@@ -44,7 +44,13 @@ const FAQS: FAQItem[] = [
 ];
 
 export default function PricingPage() {
-  const { data: session, update: updateSession } = useSession();
+  let session: any = null;
+  let updateSession: any = async () => null;
+  try {
+    const s = useSession();
+    session = s.data;
+    updateSession = s.update;
+  } catch {}
   const router = useRouter();
 
   // State
