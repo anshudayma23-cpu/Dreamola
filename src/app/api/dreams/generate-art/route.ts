@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import { generateArt } from '../../../../lib/art-generation';
+import { validateDreamRelevancy } from '../../../../lib/interpretation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../../../../lib/auth';
 import { checkArtLimit, incrementArtUsage } from '../../../../lib/rate-limit';
@@ -26,6 +27,14 @@ export async function POST(req: Request) {
     }
 
     const { dreamText, interpretation, type, styleMode } = parsed.data;
+
+    const relevancy = await validateDreamRelevancy(dreamText);
+    if (!relevancy.isValid) {
+      return NextResponse.json({
+        error: relevancy.reason || "We couldn't detect a dream description in your text. Please describe a dream story before generating artwork.",
+        isValidDream: false
+      }, { status: 400 });
+    }
 
     const limit = await checkArtLimit(userId, type);
     if (!limit.allowed) {

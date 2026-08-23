@@ -33,6 +33,13 @@ export async function POST(req: Request) {
     const { dreamText, depthMode } = parsed.data;
     const result = await interpret(dreamText, depthMode);
     
+    if (result.isValidDream === false) {
+      return NextResponse.json({
+        error: result.message || "Invalid dream description.",
+        isValidDream: false
+      }, { status: 400 });
+    }
+
     if (userId) {
       await incrementInterpretationUsage(userId);
     } else {

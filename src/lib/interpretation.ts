@@ -100,13 +100,109 @@ export function generateInterpretation(symbols: Symbol[], depthMode: 'deep' | 's
   return result.trim();
 }
 
+/**
+ * Validates if the input text represents a plausible dream, vision, or sleep story,
+ * filtering out random technical buzzwords, code snippets, shopping lists, or gibberish.
+ */
+export async function validateDreamRelevancy(dreamText: string): Promise<{ isValid: boolean; reason?: string }> {
+  const trimmed = dreamText.trim();
+  
+  // 1. Basic Heuristic Checks
+  if (trimmed.length < 10) {
+    return { isValid: false, reason: "Your description is too short. Please describe your dream in at least a full sentence." };
+  }
+  
+  const words = trimmed.split(/\s+/);
+  if (words.length < 2) {
+    return { isValid: false, reason: "Please write a brief description of your dream (at least 2–3 words)." };
+  }
+
+  // Check repeating character spam (e.g., 'aaaaaa', 'asdfghjkl')
+  if (/([a-zA-Z])\1{4,}/.test(trimmed) || /asdfgh|qwerty|zxcvbn/i.test(trimmed)) {
+    return { isValid: false, reason: "Please avoid random keyboard characters or gibberish." };
+  }
+
+  // Check code/programming syntax (e.g. SELECT *, console.log, <script>, {}, ;)
+  if (/select\s+.*\s+from/i.test(trimmed) || /<script|<\/script>/i.test(trimmed) || /[{};]=/i.test(trimmed)) {
+    return { isValid: false, reason: "This input looks like code or a database query rather than a dream description." };
+  }
+
+  // Check heavy technical/programming keywords
+  const techKeywords = [
+    'load testing', 'web application', 'sql injection', 'unit test', 'api endpoint',
+    'npm install', 'git commit', 'pull request', 'function()', 'database url',
+    'source code', 'http://', 'https://', 'system.out.println', 'console.log',
+    'select * from', 'where 1=1', 'drop table', 'const ', 'let ', 'var '
+  ];
+  const lowerText = trimmed.toLowerCase();
+  if (techKeywords.some(kw => lowerText.includes(kw))) {
+    return { isValid: false, reason: "This input looks like technical text or code rather than a dream description. Please describe what you saw, felt, or experienced in your sleep." };
+  }
+
+  // 2. AI Classification via Gemini API (Tier 2 Guardrail)
+  const apiKey = process.env.GOOGLE_AI_API_KEY_1 || process.env.GEMINI_API_KEY;
+  if (apiKey) {
+    try {
+      const prompt = `You are a strict dream content validator for Dreamola. Determine if the following input describes a plausible dream, sleep vision, surreal narrative, or emotional sleep experience.
+If the text is technical documentation, programming code, web performance test, shopping list, business email, random gibberish, or non-dream statement (e.g., "web application load testing"), classify it as NOT a dream.
+
+Respond ONLY with valid JSON in this exact structure:
+{"isValidDream": true|false, "reason": "brief reason why"}
+
+Text: "${trimmed.replace(/"/g, '\\"')}"`;
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { responseMimeType: "application/json" }
+        })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (responseText) {
+          const parsed = JSON.parse(responseText);
+          if (parsed.isValidDream === false) {
+            return {
+              isValid: false,
+              reason: parsed.reason || "We couldn't detect a dream story or sleep experience in your text. Please describe a scene, feeling, or vision from your dream."
+            };
+          }
+        }
+      }
+    } catch (err) {
+      console.warn("Gemini dream validation error, falling back to heuristic:", err);
+    }
+  }
+
+  return { isValid: true };
+}
+
 export async function interpret(dreamText: string, depthMode: 'deep' | 'surface' = 'deep') {
+  // Check dream relevancy guardrail
+  const relevancy = await validateDreamRelevancy(dreamText);
+  if (!relevancy.isValid) {
+    return {
+      isValidDream: false,
+      error: 'NOT_A_DREAM',
+      message: relevancy.reason || "We couldn't detect a dream story or sleep experience in your text. Please describe a scene, feeling, or vision from your dream.",
+      interpretation: null,
+      matchedSymbols: [],
+      disclaimer: DISCLAIMER
+    };
+  }
+
   const symbols = await extractSymbols(dreamText);
   const interpretation = generateInterpretation(symbols, depthMode);
   
   return {
+    isValidDream: true,
     interpretation,
     matchedSymbols: symbols.map(s => s.keyword),
     disclaimer: DISCLAIMER
   };
 }
+
