@@ -127,55 +127,40 @@ export async function validateDreamRelevancy(dreamText: string): Promise<{ isVal
     return { isValid: false, reason: "This input looks like code or a database query rather than a dream description." };
   }
 
-  // Check heavy technical/programming keywords
-  const techKeywords = [
+  // Check heavy technical/programming keywords & chat/action commands
+  const nonDreamKeywords = [
     'load testing', 'web application', 'sql injection', 'unit test', 'api endpoint',
     'npm install', 'git commit', 'pull request', 'function()', 'database url',
     'source code', 'http://', 'https://', 'system.out.println', 'console.log',
-    'select * from', 'where 1=1', 'drop table', 'const ', 'let ', 'var '
+    'select * from', 'where 1=1', 'drop table', 'const ', 'let ', 'var ',
+    'deploy', 'deploy it', 'right away', 'make it live', 'run this', 'click button',
+    'tell me', 'joke', 'who are you', 'what is your name', 'hello', 'hi there',
+    'buy now', 'shopping cart', 'add to cart', 'how to use', 'test text',
+    'can you', 'please explain', 'what is the', 'how do i', 'give me a'
   ];
+  
   const lowerText = trimmed.toLowerCase();
-  if (techKeywords.some(kw => lowerText.includes(kw))) {
-    return { isValid: false, reason: "This input looks like technical text or code rather than a dream description. Please describe what you saw, felt, or experienced in your sleep." };
+  if (nonDreamKeywords.some(kw => lowerText.includes(kw))) {
+    return { isValid: false, reason: "This input looks like a command, technical instruction, or chat request rather than a dream description. Please describe what you saw, felt, or experienced in your sleep." };
   }
 
-  // 2. AI Classification via Gemini API (Tier 2 Guardrail)
-  const apiKey = process.env.GOOGLE_AI_API_KEY_1 || process.env.GEMINI_API_KEY;
-  if (apiKey) {
-    try {
-      const prompt = `You are a strict dream content validator for Dreamola. Determine if the following input describes a plausible dream, sleep vision, surreal narrative, or emotional sleep experience.
-If the text is technical documentation, programming code, web performance test, shopping list, business email, random gibberish, or non-dream statement (e.g., "web application load testing"), classify it as NOT a dream.
+  // 2. Check if dictionary symbols or dream narrative themes exist in input
+  const symbols = await extractSymbols(trimmed);
+  const dreamNarrativeKeywords = [
+    'dream', 'dreamed', 'saw', 'felt', 'was', 'were', 'flying', 'falling', 'running', 
+    'chased', 'walking', 'woke', 'sleep', 'sleeping', 'nightmare', 'vision', 'shadow', 
+    'light', 'water', 'ocean', 'sky', 'house', 'room', 'door', 'people', 'monster', 
+    'creature', 'ghost', 'death', 'died', 'teeth', 'fire', 'car', 'road', 'forest', 
+    'tree', 'snake', 'dog', 'cat', 'bird', 'staircase', 'floating', 'crying', 'laughing'
+  ];
 
-Respond ONLY with valid JSON in this exact structure:
-{"isValidDream": true|false, "reason": "brief reason why"}
+  const hasNarrativeWord = dreamNarrativeKeywords.some(kw => lowerText.includes(kw));
 
-Text: "${trimmed.replace(/"/g, '\\"')}"`;
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: "application/json" }
-        })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (responseText) {
-          const parsed = JSON.parse(responseText);
-          if (parsed.isValidDream === false) {
-            return {
-              isValid: false,
-              reason: parsed.reason || "We couldn't detect a dream story or sleep experience in your text. Please describe a scene, feeling, or vision from your dream."
-            };
-          }
-        }
-      }
-    } catch (err) {
-      console.warn("Gemini dream validation error, falling back to heuristic:", err);
-    }
+  if (symbols.length === 0 && !hasNarrativeWord) {
+    return { 
+      isValid: false, 
+      reason: "We couldn't detect any recognizable dream symbols or sleep narrative themes in your text. Try describing what you saw, felt, or experienced in your dream (e.g., 'I was walking near the ocean...')." 
+    };
   }
 
   return { isValid: true };
