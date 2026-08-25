@@ -87,15 +87,40 @@ export default function PricingPage() {
 
       // Initialize Razorpay Checkout
       if (typeof window !== 'undefined' && (window as any).Razorpay) {
-        const options = {
+        const options: any = {
           key: data.keyId,
-          subscription_id: data.subscriptionId,
           name: 'Dreamola',
-          description: `${planType === 'mid' ? 'Lucid' : 'Oracle'} Subscription (${billingCycle})`,
+          description: `${planType === 'mid' ? 'Lucid' : 'Oracle'} Membership (${billingCycle})`,
           image: '/favicon.ico',
-          handler: async function () {
-            await updateSession();
-            router.push('/dream');
+          amount: data.amount,
+          currency: data.currency || 'INR',
+          handler: async function (response: any) {
+            try {
+              // Verify payment and upgrade plan on server
+              const verifyRes = await fetch('/api/payments/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_subscription_id: response.razorpay_subscription_id,
+                  razorpay_signature: response.razorpay_signature,
+                  planType,
+                })
+              });
+
+              if (verifyRes.ok) {
+                await updateSession();
+                router.push('/dream');
+                router.refresh();
+              } else {
+                const verifyData = await verifyRes.json();
+                setError(verifyData.error || 'Payment verification failed.');
+              }
+            } catch (vErr: any) {
+              console.error('Payment verification error:', vErr);
+              setError('Payment completed but verification failed. Please refresh.');
+            }
           },
           prefill: {
             name: data.name || session.user?.username || '',
@@ -106,10 +131,16 @@ export default function PricingPage() {
           },
         };
 
+        if (data.subscriptionId) {
+          options.subscription_id = data.subscriptionId;
+        } else if (data.orderId) {
+          options.order_id = data.orderId;
+        }
+
         const rzp = new (window as any).Razorpay(options);
         rzp.open();
       } else {
-        throw new Error('Razorpay SDK failed to load. Please refresh the page.');
+        throw new Error('Razorpay Checkout SDK failed to load. Please refresh the page.');
       }
     } catch (err: any) {
       console.error('Subscription error:', err);
@@ -121,7 +152,7 @@ export default function PricingPage() {
 
   return (
     <div className="bg-surface text-on-surface font-body-md min-h-screen relative overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container flex flex-col justify-between">
-      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+      <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="afterInteractive" />
 
       {/* Ambient Blur Orbs */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
