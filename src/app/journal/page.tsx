@@ -530,18 +530,18 @@ export default function JournalPage() {
 
         {/* Free Plan Lock Modal */}
         {isFree && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center p-6 mt-32">
-            <div className="glass-panel bg-white/95 border border-primary/20 rounded-3xl p-8 md:p-10 max-w-md w-full text-center shadow-[0_12px_48px_rgba(99,14,212,0.15)] animate-fadeIn flex flex-col items-center">
-              <div className="w-14 h-14 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center mb-5">
+          <div className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
+            <div className="bg-white border border-primary/20 rounded-3xl p-6 md:p-8 max-w-md w-full text-center shadow-2xl flex flex-col items-center relative z-50">
+              <div className="w-14 h-14 bg-primary/10 border border-primary/20 rounded-2xl flex items-center justify-center mb-4">
                 <Lock className="w-6 h-6 text-primary animate-pulse" />
               </div>
 
-              <h2 className="text-2xl font-serif text-on-surface mb-2 font-bold flex items-center gap-1.5 justify-center">
+              <h2 className="text-xl md:text-2xl font-serif text-on-surface mb-2 font-bold flex items-center gap-1.5 justify-center">
                 <Sparkles className="w-5 h-5 text-primary" />
                 Unlock Private Journal
               </h2>
               
-              <p className="text-sm text-on-surface-variant mb-6 leading-relaxed">
+              <p className="text-xs md:text-sm text-on-surface-variant mb-6 leading-relaxed">
                 Save an encrypted personal journal of your dreams, audio narrations, mood tags, and toggle visibility with the public collective.
               </p>
 

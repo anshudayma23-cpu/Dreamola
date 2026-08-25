@@ -396,7 +396,7 @@ export default function DreamPage() {
           {/* Mood & Themes Chips */}
           <div className="flex flex-col gap-stack-md">
             <span className="font-label-md text-label-md text-on-surface-variant uppercase">Mood & Themes</span>
-            <div className="flex flex-wrap gap-3 items-center">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3 items-center w-full">
               {DEFAULT_MOODS.map(({ label, icon: Icon }) => {
                 const isSelected = selectedMoods.includes(label);
                 return (
@@ -404,14 +404,14 @@ export default function DreamPage() {
                     key={label}
                     type="button"
                     onClick={() => toggleMood(label)}
-                    className={`px-4 py-2 rounded-full border font-label-md text-label-md flex items-center gap-2 transition-all cursor-pointer ${
+                    className={`w-full justify-center px-2 sm:px-3 py-2 rounded-full border font-label-md text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer truncate ${
                       isSelected 
-                        ? 'border-primary-fixed-dim/40 bg-primary-container/20 text-primary shadow-sm' 
-                        : 'border-primary-fixed-dim/30 bg-surface-container-lowest/50 text-on-background hover:bg-primary-container/20'
+                        ? 'border-primary-fixed-dim/40 bg-primary-container/20 text-primary font-bold shadow-sm' 
+                        : 'border-primary-fixed-dim/30 bg-surface-container-lowest/50 text-on-background hover:bg-primary-container/20 font-medium'
                     }`}
                   >
-                    {Icon && <Icon className="w-4 h-4 text-primary" />}
-                    {label}
+                    {Icon && <Icon className="w-3.5 h-3.5 text-primary shrink-0" />}
+                    <span className="truncate">{label}</span>
                   </button>
                 );
               })}
@@ -420,35 +420,35 @@ export default function DreamPage() {
               {customTags.map((tag) => (
                 <span 
                   key={tag} 
-                  className="px-4 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-label-md flex items-center gap-2"
+                  className="w-full justify-between px-2.5 py-2 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-md text-xs sm:text-sm flex items-center gap-1 truncate"
                 >
-                  {tag}
+                  <span className="truncate">{tag}</span>
                   <button 
                     type="button"
                     onClick={() => setCustomTags(tags => tags.filter(t => t !== tag))} 
-                    className="hover:text-red-500 transition-colors"
+                    className="hover:text-red-500 transition-colors shrink-0"
                   >
-                    <X className="w-3.5 h-3.5" />
+                    <X className="w-3 h-3" />
                   </button>
                 </span>
               ))}
 
               {/* Add Custom Tag Button/Input */}
               {isAddingTag ? (
-                <div className="flex items-center gap-1 bg-surface-container-lowest/80 border border-outline-variant/30 rounded-full px-3 py-1">
+                <div className="w-full flex items-center justify-between gap-1 bg-surface-container-lowest/80 border border-outline-variant/30 rounded-full px-2.5 py-1.5">
                   <input
                     type="text"
-                    placeholder="tag name..."
+                    placeholder="tag..."
                     value={customTagInput}
                     onChange={(e) => setCustomTagInput(e.target.value)}
                     onKeyDown={handleAddCustomTag}
                     autoFocus
-                    className="bg-transparent font-label-md text-sm text-on-background outline-none w-24"
+                    className="bg-transparent font-label-md text-xs text-on-background outline-none w-full min-w-0"
                   />
                   <button 
                     type="button" 
                     onClick={() => setIsAddingTag(false)}
-                    className="text-on-surface-variant hover:text-on-background"
+                    className="text-on-surface-variant hover:text-on-background shrink-0"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -457,9 +457,9 @@ export default function DreamPage() {
                 <button 
                   type="button"
                   onClick={() => setIsAddingTag(true)}
-                  className="px-4 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant border-dashed hover:bg-surface-container transition-colors flex items-center gap-1 font-label-md text-label-md cursor-pointer"
+                  className="w-full justify-center px-3 py-2 rounded-full border border-outline-variant/30 text-on-surface-variant border-dashed hover:bg-surface-container transition-colors flex items-center gap-1 font-label-md text-xs sm:text-sm cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" /> Add
+                  <Plus className="w-3.5 h-3.5" /> Add
                 </button>
               )}
             </div>
@@ -467,15 +467,15 @@ export default function DreamPage() {
 
           {/* Controls & Submission */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 border-t border-outline-variant/10">
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex flex-row items-center justify-between sm:justify-start gap-2 sm:gap-4 w-full md:w-auto">
               {/* Depth Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner">
-                <div className="relative group">
+              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner flex-1 sm:flex-none justify-center">
+                <div className="relative group flex-1 sm:flex-none">
                   <button 
                     type="button"
                     onClick={() => setDepthMode('deep')}
-                    className={`px-4 py-2 rounded-full font-label-md text-label-md transition-all cursor-pointer ${
-                      depthMode === 'deep' ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-background'
+                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                      depthMode === 'deep' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Deep Dive
@@ -486,12 +486,12 @@ export default function DreamPage() {
                   </div>
                 </div>
                 
-                <div className="relative group">
+                <div className="relative group flex-1 sm:flex-none">
                   <button 
                     type="button"
                     onClick={() => setDepthMode('surface')}
-                    className={`px-4 py-2 rounded-full font-label-md text-label-md transition-all cursor-pointer ${
-                      depthMode === 'surface' ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-background'
+                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                      depthMode === 'surface' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Surface
@@ -504,13 +504,13 @@ export default function DreamPage() {
               </div>
 
               {/* Art Style Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner">
-                <div className="relative group">
+              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner flex-1 sm:flex-none justify-center">
+                <div className="relative group flex-1 sm:flex-none">
                   <button 
                     type="button"
                     onClick={() => setArtStyleMode('surreal')}
-                    className={`px-4 py-2 rounded-full font-label-md text-label-md transition-all cursor-pointer ${
-                      artStyleMode === 'surreal' ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-background'
+                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                      artStyleMode === 'surreal' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Surreal Art
@@ -521,12 +521,12 @@ export default function DreamPage() {
                   </div>
                 </div>
 
-                <div className="relative group">
+                <div className="relative group flex-1 sm:flex-none">
                   <button 
                     type="button"
                     onClick={() => setArtStyleMode('literal')}
-                    className={`px-4 py-2 rounded-full font-label-md text-label-md transition-all cursor-pointer ${
-                      artStyleMode === 'literal' ? 'bg-white shadow-sm text-primary' : 'text-on-surface-variant hover:text-on-background'
+                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                      artStyleMode === 'literal' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Literal
