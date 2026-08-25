@@ -467,36 +467,36 @@ export default function DreamPage() {
 
           {/* Controls & Submission */}
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-6 border-t border-outline-variant/10">
-            <div className="flex flex-row items-center justify-between sm:justify-start gap-2 sm:gap-4 w-full md:w-auto">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-3 w-full md:w-auto items-center">
               {/* Depth Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner flex-1 sm:flex-none justify-center">
-                <div className="relative group flex-1 sm:flex-none">
+              <div className="bg-surface-container-low rounded-full p-0.5 sm:p-1 flex items-center shadow-inner w-full justify-between">
+                <div className="relative group flex-1">
                   <button 
                     type="button"
                     onClick={() => setDepthMode('deep')}
-                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                    className={`w-full px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-label-md text-[11px] sm:text-xs transition-all cursor-pointer whitespace-nowrap text-center ${
                       depthMode === 'deep' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Deep Dive
                   </button>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-4 py-2 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-3 py-1.5 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
                     Find hidden archetypes
                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white border-t border-l border-outline-variant/20 rotate-45"></div>
                   </div>
                 </div>
                 
-                <div className="relative group flex-1 sm:flex-none">
+                <div className="relative group flex-1">
                   <button 
                     type="button"
                     onClick={() => setDepthMode('surface')}
-                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                    className={`w-full px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-label-md text-[11px] sm:text-xs transition-all cursor-pointer whitespace-nowrap text-center ${
                       depthMode === 'surface' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Surface
                   </button>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-4 py-2 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-3 py-1.5 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
                     Literal dream summary
                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white border-t border-l border-outline-variant/20 rotate-45"></div>
                   </div>
@@ -504,34 +504,34 @@ export default function DreamPage() {
               </div>
 
               {/* Art Style Toggle */}
-              <div className="bg-surface-container-low rounded-full p-1 flex items-center shadow-inner flex-1 sm:flex-none justify-center">
-                <div className="relative group flex-1 sm:flex-none">
+              <div className="bg-surface-container-low rounded-full p-0.5 sm:p-1 flex items-center shadow-inner w-full justify-between">
+                <div className="relative group flex-1">
                   <button 
                     type="button"
                     onClick={() => setArtStyleMode('surreal')}
-                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                    className={`w-full px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-label-md text-[11px] sm:text-xs transition-all cursor-pointer whitespace-nowrap text-center ${
                       artStyleMode === 'surreal' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Surreal Art
                   </button>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-4 py-2 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-3 py-1.5 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
                     Abstract emotional painting
                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white border-t border-l border-outline-variant/20 rotate-45"></div>
                   </div>
                 </div>
 
-                <div className="relative group flex-1 sm:flex-none">
+                <div className="relative group flex-1">
                   <button 
                     type="button"
                     onClick={() => setArtStyleMode('literal')}
-                    className={`w-full px-3 sm:px-4 py-2 rounded-full font-label-md text-xs sm:text-sm transition-all cursor-pointer whitespace-nowrap ${
+                    className={`w-full px-1.5 sm:px-3.5 py-1.5 sm:py-2 rounded-full font-label-md text-[11px] sm:text-xs transition-all cursor-pointer whitespace-nowrap text-center ${
                       artStyleMode === 'literal' ? 'bg-white shadow-sm text-primary font-bold' : 'text-on-surface-variant hover:text-on-background font-medium'
                     }`}
                   >
                     Literal
                   </button>
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-4 py-2 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white border border-outline-variant/20 text-on-surface px-3 py-1.5 rounded-2xl font-label-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 shadow-md">
                     Photorealistic scene render
                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-white border-t border-l border-outline-variant/20 rotate-45"></div>
                   </div>
