@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       return NextResponse.json({
         subscriptionId: subscription.id,
         keyId,
-        amount: planType === 'mid' ? (billingCycle === 'annually' ? 28800 : 2900) : (billingCycle === 'annually' ? 82800 : 7900),
+        amount: planType === 'mid' ? (billingCycle === 'annually' ? 28800 : 2900) : (billingCycle === 'annually' ? 46800 : 4900),
         name: user.displayName || user.username,
         email: user.email,
       });
@@ -65,10 +65,10 @@ export async function POST(req: Request) {
     // 2. Fallback: Create a Razorpay Order directly (Works seamlessly with any API keys without dashboard plan setup)
     console.log(`[Subscription] Creating Razorpay order fallback for user ${user.id} (${planType}, ${billingCycle})`);
     
-    // Calculate amount in paise (₹29/mo or ₹24/mo*12=₹288/yr for Lucid; ₹79/mo or ₹69/mo*12=₹828/yr for Oracle)
+    // Calculate amount in paise (₹29/mo or ₹288/yr for Lucid; ₹49/mo or ₹468/yr for Oracle)
     const amountInRupees = planType === 'mid' 
       ? (billingCycle === 'annually' ? 288 : 29)
-      : (billingCycle === 'annually' ? 828 : 79);
+      : (billingCycle === 'annually' ? 468 : 49);
     const amountInPaise = amountInRupees * 100;
 
     const order = await razorpay.orders.create({
