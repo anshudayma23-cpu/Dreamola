@@ -332,7 +332,7 @@ export default function PricingPage() {
           {/* Card 3: ORACLE ($9.99 / $7.99) — [MASTER SANCTUARY] */}
           <div className="glass-panel bg-white/75 rounded-[2.5rem] p-8 flex flex-col justify-between gap-6 relative group hover:-translate-y-2 transition-transform duration-300 border border-white shadow-[0_8px_32px_rgba(30,27,75,0.06)]">
             <div className="flex flex-col gap-2">
-              <span className="bg-surface-tint text-white text-xs font-bold px-3 py-1 rounded-full w-fit mb-2">
+              <span className="bg-[#181445] text-amber-300 border border-amber-300/30 text-xs font-bold px-3 py-1 rounded-full w-fit mb-2 flex items-center gap-1 shadow-sm">
                 👑 Master Oracle
               </span>
               <h3 className="font-headline-md text-headline-md text-on-surface font-bold">Oracle</h3>

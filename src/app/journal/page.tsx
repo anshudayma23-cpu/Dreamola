@@ -559,27 +559,27 @@ export default function JournalPage() {
 
       {/* Delete Confirmation Modal */}
       {deletingId && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fadeIn">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-4 animate-fadeIn">
           <div className="glass-panel bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-white flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-error/10 text-error flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
               <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="font-headline-md text-lg font-bold text-on-surface">Delete Dream Entry?</h3>
-            <p className="text-xs text-on-surface-variant">
+            <h3 className="font-headline-md text-lg font-bold text-gray-900">Delete Dream Entry?</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">
               This action cannot be undone. This dream will be permanently removed from your sanctuary.
             </p>
             <div className="flex gap-3 w-full mt-3">
               <button 
                 type="button"
                 onClick={() => setDeletingId(null)}
-                className="flex-1 py-2.5 rounded-full border border-outline-variant/30 text-xs font-semibold text-on-surface-variant hover:bg-surface-container"
+                className="flex-1 py-2.5 rounded-full border border-gray-300 bg-gray-100 text-gray-800 text-xs font-bold hover:bg-gray-200 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
               <button 
                 type="button"
                 onClick={() => handleDeleteDream(deletingId)}
-                className="flex-1 py-2.5 rounded-full bg-error text-white text-xs font-semibold hover:opacity-90"
+                className="flex-1 py-2.5 rounded-full bg-red-600 text-white text-xs font-bold hover:bg-red-700 shadow-md transition-all cursor-pointer"
               >
                 Delete
               </button>
