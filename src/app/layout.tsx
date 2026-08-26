@@ -4,6 +4,7 @@ import "../styles/globals.css";
 import React from "react";
 import { SessionProvider } from "../components/providers/SessionProvider";
 import { Navbar } from "../components/layout/Navbar";
+import { PromoBanner } from "../components/layout/PromoBanner";
 import { Footer } from "../components/layout/Footer";
 import { Analytics } from "@vercel/analytics/react";
 
@@ -137,6 +138,7 @@ export default function RootLayout({
       >
         <SessionProvider>
           <Navbar />
+          <PromoBanner />
           <div className="flex-grow">
             {children}
           </div>
