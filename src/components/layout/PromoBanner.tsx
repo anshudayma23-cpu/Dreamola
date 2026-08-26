@@ -100,17 +100,38 @@ export function PromoBanner() {
 
   return (
     <>
-      <div className="w-full flex justify-center pt-20 pb-0 px-4 pointer-events-auto z-40 relative">
-        <div className="w-full max-w-[1020px] bg-[#181445]/95 backdrop-blur-xl border border-amber-400/30 text-white rounded-full shadow-[0_8px_32px_rgba(245,158,11,0.15)] px-3.5 sm:px-6 py-2 flex items-center justify-between gap-2 transition-all">
+      <div className="w-full flex justify-center pt-20 pb-0 px-2 sm:px-4 pointer-events-auto z-40 relative">
+        <div className="w-full max-w-[1020px] bg-[#181445]/95 backdrop-blur-xl border border-amber-400/30 text-white rounded-2xl sm:rounded-full shadow-[0_8px_32px_rgba(245,158,11,0.15)] p-2.5 sm:px-6 sm:py-2 flex flex-col sm:flex-row items-center justify-between gap-1.5 sm:gap-2 transition-all">
           
-          {/* Left Title */}
-          <div className="flex items-center gap-1.5 sm:gap-2 font-sans font-bold text-xs sm:text-sm text-white shrink-0">
-            <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
-            <span className="whitespace-nowrap">1 Month FREE Lucid Plan</span>
+          {/* Top Row on Mobile / Left Title on Desktop */}
+          <div className="w-full sm:w-auto flex items-center justify-between sm:justify-start gap-2">
+            <div className="flex items-center gap-1.5 font-sans font-bold text-xs sm:text-sm text-white shrink-0">
+              <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 fill-amber-400 animate-pulse shrink-0" />
+              <span className="whitespace-nowrap">1 Month FREE Lucid Plan</span>
+            </div>
+
+            {/* Mobile Action Button */}
+            <div className="sm:hidden shrink-0">
+              {claimStatus ? (
+                <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Check className="w-2.5 h-2.5 text-amber-400" />
+                  {claimStatus}
+                </span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleClaim}
+                  disabled={isClaiming}
+                  className="bg-gradient-to-r from-[#630ed4] to-[#a855f7] hover:opacity-95 text-white font-sans text-[11px] font-bold px-3 py-1 rounded-full shadow-md cursor-pointer whitespace-nowrap"
+                >
+                  <span>{isClaiming ? 'Claiming...' : 'Claim →'}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Center Timer */}
-          <div className="font-mono text-xs sm:text-sm font-bold text-amber-400 tracking-wider whitespace-nowrap">
+          <div className="font-mono text-xs sm:text-sm font-bold text-amber-400 tracking-wider whitespace-nowrap text-center">
             <span>{pad(timeLeft.days)}d</span>
             <span className="mx-0.5 sm:mx-1 text-amber-400/70">:</span>
             <span>{pad(timeLeft.hours)}h</span>
@@ -120,10 +141,10 @@ export function PromoBanner() {
             <span>{pad(timeLeft.seconds)}s</span>
           </div>
 
-          {/* Right Action */}
-          <div className="shrink-0">
+          {/* Desktop Action Button */}
+          <div className="hidden sm:block shrink-0">
             {claimStatus ? (
-              <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
+              <span className="bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
                 <Check className="w-3 h-3 text-amber-400" />
                 {claimStatus}
               </span>
@@ -132,7 +153,7 @@ export function PromoBanner() {
                 type="button"
                 onClick={handleClaim}
                 disabled={isClaiming}
-                className="bg-gradient-to-r from-[#630ed4] to-[#a855f7] hover:opacity-95 text-white font-sans text-xs font-bold px-3 sm:px-4 py-1 sm:py-1.5 rounded-full shadow-md hover:scale-105 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1"
+                className="bg-gradient-to-r from-[#630ed4] to-[#a855f7] hover:opacity-95 text-white font-sans text-xs font-bold px-4 py-1.5 rounded-full shadow-md hover:scale-105 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1"
               >
                 <span>{isClaiming ? 'Claiming...' : 'Claim →'}</span>
               </button>

@@ -33,22 +33,24 @@ export default function Home() {
             Describe your dream. Our AI will visualize its essence and decode the subconscious symbols hidden within.
           </p>
 
-          <form onSubmit={handleInterpret} className="glass-panel rounded-full p-2 flex items-center gap-2 max-w-lg">
-            <span className="text-[#7b7487] ml-4">
-              <Edit3 className="w-5 h-5" />
-            </span>
-            <input 
-              type="text"
-              value={dreamPrompt}
-              onChange={(e) => setDreamPrompt(e.target.value)}
-              placeholder="I was walking through a forest of glass trees..."
-              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-body-md placeholder:text-outline-variant py-2 font-normal text-[#181445]"
-            />
+          <form onSubmit={handleInterpret} className="glass-panel rounded-3xl sm:rounded-full p-2 flex flex-col sm:flex-row items-center gap-2 max-w-lg w-full">
+            <div className="flex items-center gap-2 w-full flex-1 px-2">
+              <span className="text-[#7b7487] ml-2 sm:ml-4 shrink-0">
+                <Edit3 className="w-5 h-5" />
+              </span>
+              <input 
+                type="text"
+                value={dreamPrompt}
+                onChange={(e) => setDreamPrompt(e.target.value)}
+                placeholder="I was walking through a forest of glass trees..."
+                className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-body-md placeholder:text-outline-variant py-2 font-normal text-[#181445]"
+              />
+            </div>
             <button 
               type="submit"
-              className="btn-aurora text-white font-button text-button px-6 py-3 rounded-full whitespace-nowrap hover:scale-95 transition-transform cursor-pointer"
+              className="w-full sm:w-auto btn-aurora text-white font-button text-button px-6 py-3 rounded-full whitespace-nowrap hover:scale-95 transition-transform cursor-pointer text-center"
             >
-              Interpret Free
+              Interpret Free ✨
             </button>
           </form>
 
@@ -97,16 +99,16 @@ export default function Home() {
             alt="A soft surrealist fine-art oil painting of a glowing wooden doorway standing alone in an infinite, quiet sea of clouds under a soft crescent moon."
             className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10" />
-          <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end z-20">
-            <span className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full font-label-md text-label-md border border-white/30">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent z-10" />
+          <div className="absolute bottom-3 left-3 right-3 sm:bottom-6 sm:left-6 sm:right-6 flex flex-wrap justify-between items-end gap-2 z-20">
+            <span className="bg-white/20 backdrop-blur-md text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full font-label-md text-[11px] sm:text-label-md border border-white/30 truncate">
               Dream Extract: Clarity
             </span>
-            <div className="flex gap-2">
-              <span className="bg-black/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-label-md text-[12px] border border-white/20">
+            <div className="flex flex-wrap gap-1.5">
+              <span className="bg-black/30 backdrop-blur-md text-white px-2.5 py-1 sm:px-3 sm:py-1 rounded-full font-label-md text-[10px] sm:text-[12px] border border-white/20">
                 Literal Scene
               </span>
-              <span className="bg-black/20 backdrop-blur-md text-white px-3 py-1 rounded-full font-label-md text-[12px] border border-white/20">
+              <span className="bg-black/30 backdrop-blur-md text-white px-2.5 py-1 sm:px-3 sm:py-1 rounded-full font-label-md text-[10px] sm:text-[12px] border border-white/20">
                 Emotion
               </span>
             </div>
