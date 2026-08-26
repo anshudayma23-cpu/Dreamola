@@ -92,7 +92,7 @@ export function PromoBanner() {
 
   return (
     <>
-      <div className="w-full flex justify-center pt-24 pb-2 px-4 pointer-events-auto z-40 relative">
+      <div className="w-full flex justify-center pt-20 pb-0 px-4 pointer-events-auto z-40 relative">
         <div className="w-full max-w-[1020px] bg-[#181445]/95 backdrop-blur-xl border border-amber-400/30 text-white rounded-full shadow-[0_8px_32px_rgba(245,158,11,0.15)] px-3.5 sm:px-6 py-2 flex items-center justify-between gap-2 transition-all">
           
           {/* Left Title */}

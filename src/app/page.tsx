@@ -22,7 +22,7 @@ export default function Home() {
   };
 
   return (
-    <main className="pt-32 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-24">
+    <main className="pt-6 md:pt-8 pb-20 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto space-y-24">
       {/* Hero Section */}
       <section className="grid md:grid-cols-2 gap-stack-lg items-center">
         <div className="space-y-stack-lg">

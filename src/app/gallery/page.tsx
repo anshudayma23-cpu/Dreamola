@@ -278,7 +278,7 @@ export default function GalleryPage() {
       </div>
 
       {/* Main Content */}
-      <main className="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto flex flex-col gap-stack-lg">
+      <main className="pt-6 md:pt-8 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto flex flex-col gap-stack-lg">
         
         {/* Hero Section */}
         <section className="text-center flex flex-col items-center gap-stack-md mt-4">

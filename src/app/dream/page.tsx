@@ -339,7 +339,7 @@ export default function DreamPage() {
   };
 
   return (
-    <div className="text-on-background min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container pt-20">
+    <div className="text-on-background min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container pt-2">
       
       {/* Main Canvas Container */}
       <main className="flex-grow w-full max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop py-8 flex flex-col gap-10">

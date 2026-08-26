@@ -162,7 +162,7 @@ export default function PricingPage() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-grow pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto w-full flex flex-col gap-16 relative z-10">
+      <main className="flex-grow pt-6 md:pt-8 pb-24 px-margin-mobile md:px-margin-desktop max-w-7xl mx-auto w-full flex flex-col gap-16 relative z-10">
         
         {/* Hero Header & Billing Toggle */}
         <section className="text-center flex flex-col items-center gap-6">

@@ -229,7 +229,7 @@ export default function JournalPage() {
       </div>
 
       {/* Main Content */}
-      <main className="flex-grow w-full max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop py-12 mt-8 flex flex-col items-center relative z-10">
+      <main className="flex-grow w-full max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop pt-4 pb-12 flex flex-col items-center relative z-10">
         
         {/* Hero Section */}
         <header className="text-center mb-12 flex flex-col items-center w-full">
