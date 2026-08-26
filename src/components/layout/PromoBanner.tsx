@@ -92,7 +92,9 @@ export function PromoBanner() {
   const isUserLucidOrOracle = user?.plan === 'mid' || user?.plan === 'premium';
   const hasClaimedLocal = typeof window !== 'undefined' && localStorage.getItem('dreamola_promo_claimed') === 'true';
 
-  if (isExpired || !timeLeft || isUserLucidOrOracle || hasClaimedLocal) return null;
+  if (isExpired || !timeLeft || isUserLucidOrOracle || hasClaimedLocal) {
+    return <div className="pt-20 md:pt-24 pointer-events-none" />;
+  }
 
   const pad = (n: number) => n.toString().padStart(2, '0');
 
