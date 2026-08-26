@@ -73,6 +73,9 @@ export function PromoBanner() {
       const data = await res.json();
       if (res.ok && data.success) {
         setClaimStatus('Claimed 1 Month Free!');
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('dreamola_promo_claimed', 'true');
+        }
         await updateSession();
       } else {
         setClaimStatus(data.message || data.error || 'Failed to claim');
@@ -86,7 +89,10 @@ export function PromoBanner() {
     }
   };
 
-  if (isExpired || !timeLeft) return null;
+  const isUserLucidOrOracle = user?.plan === 'mid' || user?.plan === 'premium';
+  const hasClaimedLocal = typeof window !== 'undefined' && localStorage.getItem('dreamola_promo_claimed') === 'true';
+
+  if (isExpired || !timeLeft || isUserLucidOrOracle || hasClaimedLocal) return null;
 
   const pad = (n: number) => n.toString().padStart(2, '0');
 
