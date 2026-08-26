@@ -67,6 +67,14 @@ export const metadata: Metadata = {
     description: "Turn your dreams into art and uncover hidden psychological symbolism with AI.",
     images: [`${appUrl}/og-image.jpg`],
   },
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' }
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/icon.svg',
+  },
   robots: {
     index: true,
     follow: true,
@@ -96,6 +104,9 @@ export default function RootLayout({
       className={`${playfair.variable} ${plusJakarta.variable}`}
     >
       <head>
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
         <link 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" 
           rel="stylesheet" 
